@@ -49,7 +49,7 @@
             this.description = description;
         }
         ToDo.prototype.render = function () {
-            return "\n        ------> Todo <-------\n        description: ".concat(this.description, ",\n      ");
+            return "\n        ------> ToDo <-------\n        description: ".concat(this.description, ",\n        done: ").concat(this.done, "\n      ");
         };
         return ToDo;
     }());
