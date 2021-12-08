@@ -57,7 +57,7 @@
     var reminder = new Reminder('Reminder criado por uma classe', new Date(), [NotificationPlatform.EMAIL]);
     var taskView = {
         render: function (tasks) {
-            var tasksList = document.getElementById('taskList');
+            var tasksList = document.getElementById('tasksList');
             while (tasksList === null || tasksList === void 0 ? void 0 : tasksList.firstChild) {
                 tasksList.removeChild(tasksList.firstChild);
             }
