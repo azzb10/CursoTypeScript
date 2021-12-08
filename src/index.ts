@@ -84,7 +84,7 @@
 
   const taskView = {
     render(tasks: Array<Task>) {
-      const tasksList = document.getElementById('taskList');
+      const tasksList = document.getElementById('tasksList');
       while (tasksList?.firstChild) {
         tasksList.removeChild(tasksList.firstChild);
       }
