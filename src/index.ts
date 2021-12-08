@@ -70,8 +70,9 @@
 
     render(): string {
       return `
-        ------> Todo <-------
+        ------> ToDo <-------
         description: ${this.description},
+        done: ${this.done}
       `
     }
 
