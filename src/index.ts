@@ -1,33 +1,37 @@
+// IIFE to preserve code scope
 (() => {
+  // Enums
   enum NotificationPlatform {
-    SMS = 'SMS',
-    EMAIL = 'EMAIL',
-    PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
+    SMS = "SMS",
+    EMAIL = "EMAIL",
+    PUSH_NOTIFICATION = "PUSH_NOTIFICATION",
   }
 
   enum Mode {
-    TODO = 'TODO',
-    REMINDER = 'REMINDER',
+    TODO = "TODO",
+    REMINDER = "REMINDER",
   }
 
-  const UUID = (): string => {
-    return Math.random().toString(32).substring(2, 9);
-  }
-
+  // Utils
   const DateUtils = {
-    tomorrow(): Date{
-      const tomorrow = new Date()
+    tomorrow(): Date {
+      const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       return tomorrow;
     },
-    today(): Date{
+    today(): Date {
       return new Date();
     },
     formatDate(date: Date): string {
-      return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
-    }
+      return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+    },
   };
 
+  const UUID = (): string => {
+    return Math.random().toString(36).substr(2, 9);
+  };
+
+  // Interfaces
   interface Task {
     id: string;
     dateCreated: Date;
@@ -40,7 +44,7 @@
     id: string = UUID();
     dateCreated: Date = DateUtils.today();
     dateUpdated: Date = DateUtils.today();
-    description: string = '';
+    description: string = "";
 
     scheduleDate: Date = DateUtils.tomorrow();
     notifications: Array<NotificationPlatform> = [NotificationPlatform.EMAIL];
@@ -69,11 +73,11 @@
     }
   }
 
-  class ToDo implements Task {
+  class Todo implements Task {
     id: string = UUID();
     dateCreated: Date = DateUtils.today();
     dateUpdated: Date = DateUtils.today();
-    description: string = '';
+    description: string = "";
 
     done: boolean = false;
 
@@ -92,14 +96,13 @@
       )} Last Update: ${DateUtils.formatDate(this.dateUpdated)}
       `;
     }
-
   }
 
   const taskView = {
-    getTodo(form: HTMLFormElement): ToDo {
+    getTodo(form: HTMLFormElement): Todo {
       const todoDescription = form.todoDescription.value;
       form.reset();
-      return new ToDo(todoDescription);
+      return new Todo(todoDescription);
     },
     getReminder(form: HTMLFormElement): Reminder {
       const reminderNotifications = [
@@ -115,36 +118,39 @@
       );
     },
     render(tasks: Array<Task>, mode: Mode) {
-      const tasksList = document.getElementById('tasksList');
+      // Clear view
+      const tasksList = document.getElementById("tasksList");
       while (tasksList?.firstChild) {
         tasksList.removeChild(tasksList.firstChild);
       }
 
+      // Render Tasks
       tasks.forEach((task) => {
-        const li = document.createElement('LI');
+        const li = document.createElement("LI");
         const textNode = document.createTextNode(task.render());
         li.appendChild(textNode);
         tasksList?.appendChild(li);
       });
 
-      const todoSet = document.getElementById('todoSet');
-      const reminderSet = document.getElementById('reminderSet');
-
+      // Render form mode
+      const todoSet = document.getElementById("todoSet");
+      const reminderSet = document.getElementById("reminderSet");
       if (mode === Mode.TODO) {
-        todoSet?.setAttribute('style', 'display: block')
-        todoSet?.removeAttribute('disabled')
-        reminderSet?.setAttribute('style', 'display: none')
-        reminderSet?.setAttribute('disabled', 'true')
+        todoSet?.setAttribute("style", "display: block;");
+        todoSet?.removeAttribute("disabled");
+        reminderSet?.setAttribute("style", "display: none;");
+        reminderSet?.setAttribute("disabled", "true");
       } else {
-        reminderSet?.setAttribute('style', 'display: block')
-        reminderSet?.removeAttribute('disabled')
-        todoSet?.setAttribute('style', 'display: none')
-        todoSet?.setAttribute('disabled', 'true')
+        reminderSet?.setAttribute("style", "display: block;");
+        reminderSet?.removeAttribute("disabled");
+        todoSet?.setAttribute("style", "display: none;");
+        todoSet?.setAttribute("disabled", "true");
       }
-    }
+    },
   };
 
-  const TaskController = (view: typeof taskView ) => {
+  // Controllers
+  const TaskController = (view: typeof taskView) => {
     const tasks: Array<Task> = [];
     let mode: Mode = Mode.TODO;
 
@@ -165,14 +171,14 @@
     const handleModeToggle = () => {
       switch (mode as Mode) {
         case Mode.TODO:
-          mode = Mode.TODO
+          mode = Mode.REMINDER;
           break;
         case Mode.REMINDER:
-          mode = Mode.REMINDER
+          mode = Mode.TODO;
           break;
       }
-      view.render(tasks, mode)
-    }
+      view.render(tasks, mode);
+    };
 
     document
       .getElementById("toggleMode")
